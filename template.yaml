@@ -1,0 +1,33 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+
+Resources:
+  ExampleLambdaFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName:
+      PackageType: Image
+      ImageUri:
+      ImageConfig:
+          Command:
+          - example_lambda.lambda_handler
+      Timeout: 900
+      MemorySize: 2008
+      EventInvokeConfig:
+        MaximumRetryAttempts: 0
+      Policies:
+        - Statement:
+          - Effect: Allow
+            Action: S3:*
+            Resource:
+              -
+          - Effect: Allow
+            Action:
+              - logs:CreateLogGroup
+              - logs:CreateLogStream
+              - logs:PutLogEvents
+            Resource: "*"
+          - Effect: Allow
+            Action: ses:*
+            Resource: "*"
+
