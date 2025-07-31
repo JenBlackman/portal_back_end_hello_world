@@ -1,6 +1,6 @@
 import pandas as pd
-from app.helper.parameters import *
-from app.helper.functions import *
+from helper.parameters import *
+from helper.functions import *
 from itertools import combinations
 import string
 import numpy as np

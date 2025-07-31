@@ -1,8 +1,8 @@
 import os
 import pandas as pd
 import xml.etree.ElementTree as ET
-from app.helper.functions import get_text, get_linestring, extract_days_of_week, extract_raw_days
-from app.helper.parameters import NAMESPACES  # Import NAMESPACES from helper.parameters
+from helper.functions import get_text, get_linestring, extract_days_of_week, extract_raw_days
+from helper.parameters import NAMESPACES  # Import NAMESPACES from helper.parameters
 
 
 # Function to parse and create DataFrame from XML files

@@ -1,7 +1,7 @@
 import os
 import pandas as pd
-from app.process_txc import transform_txc
-from app.process_txc.read_txc import process_xml_file  # Ensure correct import
+from process_txc import transform_txc
+from process_txc.read_txc import process_xml_file  # Ensure correct import
 
 def process_all_xml(directory_path):
 

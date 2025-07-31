@@ -2,7 +2,7 @@ import folium
 import os
 from shapely import LineString
 from shapely.wkt import loads
-from app.helper.parameters import NAMESPACES  # Import NAMESPACES here
+from helper.parameters import NAMESPACES  # Import NAMESPACES here
 import re
 
 def extract_route_name(file_path):
