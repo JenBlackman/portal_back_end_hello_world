@@ -4,7 +4,7 @@ import zipfile
 import shutil
 import logging
 
-from app.Converter import run_conversion  # Make sure this is in the same directory or packaged correctly
+from converter import run_conversion  # Make sure this is in the same directory or packaged correctly
 
 # Configure logger
 logger = logging.getLogger()

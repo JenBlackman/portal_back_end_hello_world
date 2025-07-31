@@ -7,10 +7,11 @@ def run_conversion(input_dir: str, output_dir: str) -> list[str]:
     transformed_tables = transform.transform_all_txc_tables(txc_tables_static)
     return output_hastus.create_outputs(transformed_tables, output_dir)
 
-# Optional: retain script functionality for CLI use
+# 🧪 For local testing only
 if __name__ == '__main__':
     import os
     from helper.utils import get_input_dir, get_output_dir
+    input_dir = get_input_dir()
     output_dir = get_output_dir()
     os.makedirs(output_dir, exist_ok=True)
-    run_conversion(get_input_dir(), get_output_dir())
+    run_conversion(input_dir, output_dir)

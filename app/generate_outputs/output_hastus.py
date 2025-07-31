@@ -1,11 +1,11 @@
-from app.helper.parameters import *
-from app.helper.functions import *
+from helper.parameters import *
+from helper.functions import *
 import pandas as pd
-from datetime import timedelta
+from datetime import datetime, timedelta
 from shapely import wkt
 import geopandas as gpd
 from fastkml import kml
-from fastkml.kml import Document
+from fastkml.kml import Document, Folder, Placemark
 
 
 def make_kml_document(variant_gdf: gpd.GeoDataFrame) -> kml.KML:
@@ -40,10 +40,10 @@ def make_kml_document(variant_gdf: gpd.GeoDataFrame) -> kml.KML:
     return k
 
 
-def create_link_outputs(variant_links: pd.DataFrame, variant_points: pd.DataFrame):
+def create_link_outputs(variant_links: pd.DataFrame, variant_points: pd.DataFrame, output_dir: str):
     """Generate merged KML output of variant paths, auto-building missing paths from stops."""
 
-    output_path = f'output/{region}.kml'
+    output_path = f'{output_dir}/{region}/{region}.kml'
 
     variant_links['Path'] = variant_links['Path'].apply(
         lambda x: wkt.loads(x) if isinstance(x, str) else x
@@ -105,7 +105,7 @@ def add_places(table, stops):
 
     return table
 
-def hastus_rte_version(variant_points):
+def hastus_rte_version(variant_points, subdir):
 
     variant_points = variant_points.copy(deep=True)
     variant_points = variant_points.sort_values(['DataId','Direction','VariantCode','RouteSectionPosition', 'RouteLinkPosition']).reset_index(drop=True)
@@ -161,12 +161,12 @@ def hastus_rte_version(variant_points):
                #lines.append(f"rvpoint|{stop}|{TP1}|{TP2}|{distance}|{variant_id}")
                 lines.append(f"rvpoint|{stop}|{TP1}|{TP2}|{variant_id}")
 
-    with open(f'output/hastus_files/{region}/route_version.txt', 'w') as f:
+    with open(f'{subdir}/route_version.txt', 'w') as f:
         f.write('\n'.join(lines))
 
 
 
-def hastus_rte_distances(variant_links):
+def hastus_rte_distances(variant_links, subdir):
 
     df = variant_links.copy(deep=True)
 
@@ -196,7 +196,7 @@ def hastus_rte_distances(variant_links):
     )
 
     # Write output file
-    df['Text'].to_csv(f'output/hastus_files/{region}/route_itinerary.txt', index=False, header=False)
+    df['Text'].to_csv(f'{subdir}/route_itinerary.txt', index=False, header=False)
 
 
 def format_time(td):
@@ -215,7 +215,7 @@ def round_to_quarter_hour(td, round_up=False):
     return timedelta(minutes=rounded_minutes)
 
 
-def hastus_rt_version(trip_stops, trip_subsections, stops):
+def hastus_rt_version(trip_stops, trip_subsections, stops, subdir):
 
     trip_stops = trip_stops.copy(deep=True)
     trip_subsections = trip_subsections.copy(deep=True)
@@ -316,7 +316,7 @@ def hastus_rt_version(trip_stops, trip_subsections, stops):
     load['WaitTimeMin'] = load['WaitTime'].astype(int) // 60
 
     # Write to file with runtime_version line per DayType
-    with open(f'output/hastus_files/{region}/runtime_version.txt', 'w') as f:
+    with open(f'{subdir}/runtime_version.txt', 'w') as f:
         for day_type, group in expanded.groupby("DayType"):
             day_code = day_type_code[day_type]
 
@@ -337,11 +337,11 @@ def hastus_rt_version(trip_stops, trip_subsections, stops):
 
 
 
-def hastus_trips(trips, trip_stops, stops):
+def hastus_trips(trips, trip_stops, stops, subdir):
     trips = add_places(trips, stops)
     trip_stops = trip_stops.merge(stops, on=['StopPointId'], how='left')
     trip_number = 0
-    with open(f'output/hastus_files/{region}/trips.txt', 'w') as f:
+    with open(f'{subdir}/trips.txt', 'w') as f:
         for day_type, group in trips.groupby("DayType"):
             group = group.sort_values("DepartureTime").reset_index(drop=True)
             day_code = day_type_code[day_type]
@@ -397,13 +397,13 @@ def hastus_trips(trips, trip_stops, stops):
 
 
 
-def hastus_locations(stops):
+def hastus_locations(stops, subdir):
 
     stops = stops.copy(deep=True)
     stops = stops.fillna('')
 
     # Write to file
-    with open(f'output/hastus_files/{region}/locations.txt', 'w') as f:
+    with open(f'{subdir}/locations.txt', 'w') as f:
         for _, row in stops.iterrows():
             place = row['Place']
             place_name = row['LocalityName'] + ", " + row['CommonName']
@@ -435,14 +435,18 @@ def hastus_locations(stops):
             if place:
                 f.write(f"place|{place}|{place_name}\n")
 
-from app.helper.utils import get_output_dir  # or wherever you place it
+from helper.utils import get_output_dir  # or wherever you place it
 
 def create_outputs(transformed_tables, output_dir=None):
     if output_dir is None:
         output_dir = get_output_dir()
 
+    if os.environ.get("AWS_EXECUTION_ENV", "").startswith("AWS_Lambda"):
+        subdir = output_dir
+    else:
+        subdir = os.path.join(output_dir, region, 'hastus_files')
+
     os.makedirs(output_dir, exist_ok=True)
-    subdir = os.path.join(output_dir, 'hastus_files', region)
     os.makedirs(subdir, exist_ok=True)
 
     hastus_rte_version(transformed_tables['VariantPoints'], subdir)

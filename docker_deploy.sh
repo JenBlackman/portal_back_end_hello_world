@@ -1,9 +1,9 @@
 #!/bin/bash
 version='v1.0.0'
 uri='882334376932.dkr.ecr.ap-southeast-2.amazonaws.com'
-function_name=""
+function_name="jens-file-moving-app"
 REGION="ap-southeast-2"
-profile=""
+profile="msa_sandbox"
 account="882334376932"
 
 TEMPLATE="template.yaml"
@@ -27,7 +27,7 @@ set -e
 
 # Map: Logical name in SAM template → ECR repository name
 functions_list=(
-  ""
+  "ExampleLambdaFunction", "NewLambdaFunction"
 )
 
 # Get the latest image digest for the function
