@@ -13,7 +13,7 @@ logger.setLevel(logging.INFO)
 # S3 client
 s3_client = boto3.client('s3')
 
-def lambda_handler(event=None, context=None):
+def lambda_handler(event, context):
     # 1. Get bucket and key from event
     if event is None:
         event = {}

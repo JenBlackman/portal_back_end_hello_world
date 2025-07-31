@@ -7,4 +7,4 @@ RUN pip install -r ${LAMBDA_TASK_ROOT}/requirements.txt --target "${LAMBDA_TASK_
 RUN rm -rf app/
 COPY app/ ${LAMBDA_TASK_ROOT}
 
-CMD ["example_lambda.lambda_handler"]
+CMD ["new_lambda.lambda_handler"]
