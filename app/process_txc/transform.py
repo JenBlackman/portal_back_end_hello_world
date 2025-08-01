@@ -6,6 +6,7 @@ import string
 import numpy as np
 
 
+
 def find_minimal_subsection_set(trip_patterns: pd.DataFrame) -> tuple[pd.DataFrame, pd.DataFrame]:
 
     # Remove duplicates at the timing link level (section ID no longer needed)
@@ -687,7 +688,19 @@ def create_stop_stop_paths(variant_links, stops):
     return variant_links
 
 
-def prepare_stops(txc_tables, uk_stops_path='static/stop-codes.csv', places_path='static/stops-with-places.csv'):
+def prepare_stops(txc_tables, uk_stops_path=None, places_path=None):
+    base_path = os.getenv("LAMBDA_TASK_ROOT", os.getcwd())
+    if uk_stops_path is None:
+        if os.getenv("LAMBDA_TASK_ROOT"):
+            uk_stops_path = os.path.join(base_path, "static", "stop-codes.csv")
+        else:
+            uk_stops_path = os.path.join(base_path, "app", "static", "stop-codes.csv")
+
+    if places_path is None:
+        if os.getenv("LAMBDA_TASK_ROOT"):
+            places_path = os.path.join(base_path, "static", "stops-with-places.csv")
+        else:
+            places_path = os.path.join(base_path, "app", "static", "stops-with-places.csv")
     try:
         uk_stops = import_stops(uk_stops_path)
     except Exception as e:
@@ -900,7 +913,7 @@ def generate_variant_geometry(trip_patterns, stops, variant_info):
     return variant_links, variant_points
 
 
-def transform_all_txc_tables(txc_tables_static):
+def transform_all_txc_tables(txc_tables_static, base_path=None):
     txc_tables = {key: df.copy(deep=True) for key, df in txc_tables_static.items()}
     txc_tables = map_column_names(txc_tables, column_mapping)
     txc_tables = manage_distances(txc_tables)

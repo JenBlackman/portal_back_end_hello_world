@@ -58,7 +58,9 @@ def lambda_handler(event, context):
         logger.info(f"Extracted ZIP to {extract_dir}")
 
         # 4. Run conversion logic
-        output_files = run_conversion(extract_dir, output_dir)
+
+        base_path = os.getenv("LAMBDA_TASK_ROOT", os.getcwd())
+        output_files = run_conversion(extract_dir, output_dir, base_path=base_path)
         logger.info(f"Generated {len(output_files)} output file(s)")
 
         # 5. Upload output files to output S3 bucket
