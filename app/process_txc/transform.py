@@ -687,7 +687,7 @@ def create_stop_stop_paths(variant_links, stops):
     return variant_links
 
 
-def prepare_stops(txc_tables, uk_stops_path='InputFiles/stops/stop-codes.csv', places_path='InputFiles/stops/stops-with-places2.csv'):
+def prepare_stops(txc_tables, uk_stops_path='static/stop-codes.csv', places_path='static/stops-with-places.csv'):
     try:
         uk_stops = import_stops(uk_stops_path)
     except Exception as e:

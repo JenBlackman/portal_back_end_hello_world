@@ -7,7 +7,7 @@ Resources:
     Properties:
       FunctionName: 'move-s3-object-to-another-bucket'
       PackageType: Image
-      ImageUri: 882334376932.dkr.ecr.ap-southeast-2.amazonaws.com/jens-file-moving-app@sha256:aca1eb5824d0036e55fa4aca8f922806b85670b7ca3f0a0f1822f8c1fba73623
+      ImageUri: 882334376932.dkr.ecr.ap-southeast-2.amazonaws.com/jens-file-moving-app@sha256:b4364b80b6282bd9a96b09d42fb448160990a67cf18836394c33b0ffa831bb61
       ImageConfig:
           Command:
           - example_lambda.lambda_handler
@@ -36,7 +36,7 @@ Resources:
     Properties:
       FunctionName: 'unzip-object-save-to-another-bucket'
       PackageType: Image
-      ImageUri: 882334376932.dkr.ecr.ap-southeast-2.amazonaws.com/jens-file-moving-app@sha256:aca1eb5824d0036e55fa4aca8f922806b85670b7ca3f0a0f1822f8c1fba73623
+      ImageUri: 882334376932.dkr.ecr.ap-southeast-2.amazonaws.com/jens-file-moving-app@sha256:b4364b80b6282bd9a96b09d42fb448160990a67cf18836394c33b0ffa831bb61
       ImageConfig:
         Command:
           - new_lambda.lambda_handler
