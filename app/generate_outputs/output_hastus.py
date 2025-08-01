@@ -427,13 +427,13 @@ def hastus_locations(stops, subdir):
             f.write(stop_loc_line + "\n")
 
 
-    with open(f'output/hastus_files/{region}/places.txt', 'w') as f:
-        # if 'Place' is not null write place line
-        for _, row in stops.iterrows():
-            place = row['Place']
-            place_name = row['LocalityName'] + ", " + row['CommonName']
-            if place:
-                f.write(f"place|{place}|{place_name}\n")
+    # with open(f'output/hastus_files/{region}/places.txt', 'w') as f:
+    #     # if 'Place' is not null write place line
+    #     for _, row in stops.iterrows():
+    #         place = row['Place']
+    #         place_name = row['LocalityName'] + ", " + row['CommonName']
+    #         if place:
+    #             f.write(f"place|{place}|{place_name}\n")
 
 from helper.utils import get_output_dir  # or wherever you place it
 
