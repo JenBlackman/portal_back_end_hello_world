@@ -43,7 +43,7 @@ def make_kml_document(variant_gdf: gpd.GeoDataFrame) -> kml.KML:
 def create_link_outputs(variant_links: pd.DataFrame, variant_points: pd.DataFrame, output_dir: str):
     """Generate merged KML output of variant paths, auto-building missing paths from stops."""
 
-    output_path = f'{output_dir}/{region}/{region}.kml'
+    output_path = f'{output_dir}/{region}.kml'
 
     variant_links['Path'] = variant_links['Path'].apply(
         lambda x: wkt.loads(x) if isinstance(x, str) else x
